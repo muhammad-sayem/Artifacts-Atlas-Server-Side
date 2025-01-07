@@ -79,6 +79,12 @@ async function run() {
             res.send(result);
         });
 
+        // Get All artifacts from database //
+        app.get('/artifacts', async(req, res) => {
+            const result = await artifactsCollection.find().toArray();
+            res.send(result);
+        })
+
         
 
         
