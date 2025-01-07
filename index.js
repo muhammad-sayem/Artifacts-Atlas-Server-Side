@@ -9,10 +9,7 @@ const port = process.env.PORT || 5000;
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 // Middleware //
-app.use(cors({
-    origin: ['http://localhost:5173'],
-    credentials: true
-}));
+app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 
@@ -73,10 +70,16 @@ async function run() {
         //     .send({success: true})
         // })
 
+        const artifactsCollection = client.db('historicalArtifacts').collection('artifacts');
+
+        // Add a artifact in database //
+        app.post('/add-artifact', async(req, res) => {
+            const artifactData = req.body;
+            const result = await artifactsCollection.insertOne(artifactData);
+            res.send(result);
+        });
+
         
-        // Jobs related API's //
-        const jobsCollection = client.db('jobPortal').collection('jobs');
-        const jobApplicationCollection = client.db('jobPortal').collection('job_applications');
 
         
 
