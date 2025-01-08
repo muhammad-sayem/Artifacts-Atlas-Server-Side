@@ -71,19 +71,43 @@ async function run() {
         // })
 
         const artifactsCollection = client.db('historicalArtifacts').collection('artifacts');
+        const likedArtifactsCollection = client.db('historicalArtifacts').collection('likedArtifacts');
 
-        // Add a artifact in database //
+        // Add a artifact in artifactsCollection //
         app.post('/add-artifact', async(req, res) => {
             const artifactData = req.body;
             const result = await artifactsCollection.insertOne(artifactData);
             res.send(result);
         });
 
-        // Get All artifacts from database //
+        // Get All artifacts from artifactsCollection //
         app.get('/artifacts', async(req, res) => {
             const result = await artifactsCollection.find().toArray();
             res.send(result);
-        })
+        });
+
+        // Get a specific artifact form artifactsCollection //
+        app.get('/artifact/:id', async(req, res) => {
+            const id = req.params.id;
+            const query = {_id: new ObjectId(id)}
+            const result = await artifactsCollection.findOne(query);
+            res.send(result);
+        });
+
+        // Get specific artifacts from artifactsCollection by an email //
+        app.get('/artifacts/:email', async(req, res) => {
+            const email = req.params.email;
+            const query = {adderEmail: email};
+            const result = await artifactsCollection.find(query).toArray();
+            res.send(result);
+        });
+
+        // Add artifact to likedArtifacts //
+        app.post('/add-like', async(req, res) => {
+            const likedData = req.body;
+            const result = await likedArtifactsCollection.insertOne(likedData);
+            res.send(result);
+        });
 
         
 
