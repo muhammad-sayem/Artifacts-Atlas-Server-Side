@@ -109,6 +109,13 @@ async function run() {
             res.send(result);
         });
 
+        // Get liked artifacts for a specific email //
+        app.get('/liked-artifacts/:email', async(req, res) => {
+            const email = req.params.email;
+            const query = {likedEmail: email};
+            const result = await likedArtifactsCollection.find(query).toArray();
+            res.send(result);
+        });
         
 
         
