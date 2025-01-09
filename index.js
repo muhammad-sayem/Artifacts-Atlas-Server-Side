@@ -76,6 +76,9 @@ async function run() {
         // Add a artifact in artifactsCollection //
         app.post('/add-artifact', async(req, res) => {
             const artifactData = req.body;
+
+            // 1. Check if this person liked it before //
+            // const email = 
             const result = await artifactsCollection.insertOne(artifactData);
             res.send(result);
         });
@@ -93,6 +96,14 @@ async function run() {
             const result = await artifactsCollection.findOne(query);
             res.send(result);
         });
+
+        // Delete a specific artifact from artifactsCollection //
+        app.delete('/artifact/:id', async(req, res) => {
+            const id = req.params.id;
+            const query = {_id: new ObjectId(id)}
+            const result = await artifactsCollection.deleteOne(query);
+            res.send(result);
+        })
 
         // Get specific artifacts from artifactsCollection by an email //
         app.get('/artifacts/:email', async(req, res) => {
