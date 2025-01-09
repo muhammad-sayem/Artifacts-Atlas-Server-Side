@@ -76,9 +76,6 @@ async function run() {
         // Add a artifact in artifactsCollection //
         app.post('/add-artifact', async(req, res) => {
             const artifactData = req.body;
-
-            // 1. Check if this person liked it before //
-            // const email = 
             const result = await artifactsCollection.insertOne(artifactData);
             res.send(result);
         });
@@ -116,7 +113,40 @@ async function run() {
         // Add artifact to likedArtifacts //
         app.post('/add-like', async(req, res) => {
             const likedData = req.body;
+
+            // 1. Check that if this person liked the artifact before //
+            const query = {artifactId: likedData.artifactId, likedEmail: likedData.likedEmail};
+            const alreadyExist = await likedArtifactsCollection.findOne(query);
+
+            if(alreadyExist){
+                return res.status(400).send("Already liked the artifact");
+            }
+            
+            // 2. Save the data to likedArtifactsCollection //
             const result = await likedArtifactsCollection.insertOne(likedData);
+
+            // 3. Increase like count in artifacsCollection //
+            const filter = {_id: new ObjectId(likedData.artifactId)};
+            const update = {
+                $inc: {likes: 1}
+            }
+            const updateLikesCount = await artifactsCollection.updateOne(filter, update);
+
+            res.send(result);
+        });
+
+        app.post('/remove-like', async (req, res) => {
+            const { artifactId, likedEmail } = req.body;
+    
+            const query = { artifactId, likedEmail };
+            const result = await likedArtifactsCollection.deleteOne(query);
+        
+            const filter = { _id: new ObjectId(artifactId) };
+            const update = { 
+                $inc: { likes: -1 } 
+            };
+            await artifactsCollection.updateOne(filter, update);
+        
             res.send(result);
         });
 
@@ -140,7 +170,21 @@ async function run() {
 
             const result = await artifactsCollection.updateOne(query, updated, options);
             res.send(result);
+        });
 
+        // Get all artifacts in a different way //
+        app.get('/all-artifacts', async(req, res) => {
+            const search = req.query.search;
+
+            let query = {
+                artifactName: {
+                    $regex: search,
+                    $options: 'i'
+                }
+            }
+
+            const result = await artifactsCollection.find(query).toArray();
+            res.send(result);
         })
 
         
