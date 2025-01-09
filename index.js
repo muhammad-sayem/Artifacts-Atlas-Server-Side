@@ -117,6 +117,20 @@ async function run() {
             res.send(result);
         });
         
+        // Update an artifact //
+        app.put('/update/:id', async(req, res) => {
+            const id = req.params.id;
+            const query = {_id: new ObjectId(id)}
+            const artifactData = req.body;
+            const updated = {
+                $set: artifactData
+            }
+            const options = {upsert: true};
+
+            const result = await artifactsCollection.updateOne(query, updated, options);
+            res.send(result);
+
+        })
 
         
 
