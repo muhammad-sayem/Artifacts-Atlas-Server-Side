@@ -172,6 +172,14 @@ async function run() {
             const result = await likedArtifactsCollection.find(query).toArray();
             res.send(result);
         });
+
+        // Get a single liked artifact //
+        app.get('/liked-artifact/:id', async(req, res) => {
+            const id = req.params.id;
+            const query = {artifactId: id};
+            const result = await likedArtifactsCollection.find(query).toArray();
+            res.send(result);
+        })
         
         // Update an artifact //
         app.put('/update/:id', verifyToken, async(req, res) => {
