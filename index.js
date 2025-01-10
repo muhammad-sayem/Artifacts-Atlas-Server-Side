@@ -11,7 +11,7 @@ const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const corsOptions = {
     origin: ['http://localhost:5173',
         'http://localhost:5174',
-        'https://historical-artifacts-tracker-server-three.vercel.app'
+        'https://artifacts-atlas-phero.netlify.app'
 
     ],
     credentials: true,
