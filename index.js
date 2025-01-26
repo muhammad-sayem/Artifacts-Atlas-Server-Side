@@ -114,7 +114,7 @@ async function run() {
         // Delete a specific artifact from artifactsCollection //
         app.delete('/artifact/:id', verifyToken, async(req, res) => {
             const id = req.params.id;
-            const query = {_id: new ObjectId(id)}
+            const query = {_id: new ObjectId(id)};
             const result = await artifactsCollection.deleteOne(query);
             res.send(result);
         })
